@@ -25,7 +25,8 @@ class TransactionBWClients(val amount: Double, val account_from: Account, val ac
         var string = if (card_from != null && card_to != null)
             "Card from: $card_from, card to: $card_to\n"
         else "Account from: ${account_from.id}, account to: ${account_to.id}\n"
-        string += "Time: $time\nAmount: $amount\nCurrency: $currency\nStatus: $status"
+        string += "Time: $time.format(DateTimeFormatter.ISO_DATE_TIME)" +
+                "\nAmount: $amount\nCurrency: $currency\nStatus: $status"
         return string
     }
 }

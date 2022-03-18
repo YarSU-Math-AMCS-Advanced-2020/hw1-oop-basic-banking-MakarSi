@@ -1,4 +1,5 @@
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class CashTransaction(var account: Account,
                       val amount: Double,
@@ -29,7 +30,8 @@ class CashTransaction(var account: Account,
         }
     }
 
-    override fun toString() = "Account: ${account.id}\nTime: $time\nAmount: $amount\nCurrency: " +
+    override fun toString() = "Account: ${account.id}\nTime: " +
+            "${time.format(DateTimeFormatter.ISO_DATE_TIME)}e\nAmount: $amount\nCurrency: " +
                 "${account.currency}\nPlace of withdraw: $place_to_withdraw\n" +
                 "ATM number: $ATM_num\nStatus: $status"
 }

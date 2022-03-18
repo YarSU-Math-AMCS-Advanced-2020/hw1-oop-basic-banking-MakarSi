@@ -1,6 +1,5 @@
-class DebitAccount(currency: Currency): Account(currency){
+class DebitAccount(client_id: Int, currency: Currency): Account(client_id, currency){
     override val id: Int = hashCode()
-
     override fun deposit(amount: Double, currency: Currency): Boolean{
         return if (this.currency != currency)
             false
