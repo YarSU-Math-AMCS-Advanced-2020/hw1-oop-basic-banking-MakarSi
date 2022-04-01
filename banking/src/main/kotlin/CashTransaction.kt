@@ -6,7 +6,7 @@ class CashTransaction(private var account: Account,
                       private val type: TransType,
                       private val placeOfTransaction: String,
                       private val atmNum: String,
-                      ignore_limit: Boolean): Transaction(){
+                      ignoreLimit: Boolean): Transaction(){
 
     enum class TransType{ DEPOSIT, WITHDRAWAL }
 
@@ -18,7 +18,7 @@ class CashTransaction(private var account: Account,
 
     init{
         status = if (type == TransType.WITHDRAWAL){
-            if (amount > account.balance && !ignore_limit || (account.limit ?: Double.MAX_VALUE) <= amount)
+            if (amount > account.balance && !ignoreLimit || (account.limit ?: Double.MAX_VALUE) <= amount)
                 Status.REJECTED
             else {
                 account.withdrawal(amount, account.currency)

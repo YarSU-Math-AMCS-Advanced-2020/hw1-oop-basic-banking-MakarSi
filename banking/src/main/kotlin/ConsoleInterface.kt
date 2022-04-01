@@ -1,5 +1,4 @@
 object ConsoleInterface {
-    //TODO: release interface to interact with storage and set/get info through console
     private var clientIdList: MutableList<Int> = mutableListOf()
     private var accountIdList: MutableList<Int> = mutableListOf()
     private var cardIdList: MutableList<Int> = mutableListOf()
@@ -18,7 +17,7 @@ object ConsoleInterface {
         val (surname, name, patronymic) = readln().split(" ", limit = 3)
         println("Enter gender (MALE/FEMALE)")
         val sex = PersonalInfo.Sex.valueOf(readln())
-        println("Enter the address of residence (zip code, state, city, street, house, apartment) separated by a space")
+        println("Enter the address of residence (state, city, street, house, apartment) separated by a space")
         val (state, city, street, house, apt) = readln().split(" ", limit = 5)
         println("Enter phone number without brackets, spaces, dashes")
         val phoneNum = readln()
@@ -35,7 +34,7 @@ object ConsoleInterface {
         val name = readln()
         println("Enter TIN")
         val tin = readln()
-        println("Enter the address (zip code, region, city, street, house, apartment) separated by a space")
+        println("Enter the address (state, city, street, house, apartment) separated by a space")
         val (state, city, street, house, apt) = readln().split(" ", limit = 5)
         val legalEntity = LegalEntity(name, tin, Address(state, city, street, house, apt))
         ClientStorage.legalEntityRegister(legalEntity)

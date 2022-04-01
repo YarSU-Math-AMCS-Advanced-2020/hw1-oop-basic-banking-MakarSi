@@ -19,7 +19,7 @@ class DebitAccount(client_id: Int, currency: Currency): Account(client_id, curre
         }
     }
 
-    override fun toString() = "Balance: $balance, currency: $currency, id: $id, client id: $client_id"
+    override fun toString() = "Balance: $balance, currency: $currency, id: $id, client id: $clientId"
 }
 
 //class CreditAccount(currency: Currency): Account(currency){

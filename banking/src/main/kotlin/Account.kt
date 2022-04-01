@@ -1,4 +1,4 @@
-abstract class Account(val client_id: Int, val currency: Currency){
+abstract class Account(val clientId: Int, val currency: Currency){
     var limit: Double? = null
         set(value){
             if (value != null){
