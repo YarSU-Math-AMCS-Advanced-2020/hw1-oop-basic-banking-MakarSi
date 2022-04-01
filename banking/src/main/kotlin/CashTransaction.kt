@@ -1,18 +1,18 @@
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class CashTransaction(var account: Account,
-                      val amount: Double,
-                      val type: TransType,
-                      val place_to_withdraw: String,
-                      val ATM_num: String,
+class CashTransaction(private var account: Account,
+                      private val amount: Double,
+                      private val type: TransType,
+                      private val placeOfTransaction: String,
+                      private val atmNum: String,
                       ignore_limit: Boolean): Transaction(){
 
     enum class TransType{ DEPOSIT, WITHDRAWAL }
 
     enum class Status{ ACCEPTED, REJECTED }
 
-    val time: LocalDateTime = LocalDateTime.now()
+    private val time: LocalDateTime = LocalDateTime.now()
     val status: Status
     override val id = hashCode()
 
@@ -30,8 +30,15 @@ class CashTransaction(var account: Account,
         }
     }
 
-    override fun toString() = "Account: ${account.id}\nTime: " +
-            "${time.format(DateTimeFormatter.ISO_DATE_TIME)}e\nAmount: $amount\nCurrency: " +
-                "${account.currency}\nPlace of withdraw: $place_to_withdraw\n" +
-                "ATM number: $ATM_num\nStatus: $status"
+    override fun toString(): String {
+        var string = "Account: ${account.id}\nTime: " +
+                "${time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))}\nAmount: " +
+                "$amount\nCurrency: ${account.currency}\n"
+
+        string += if (type == TransType.WITHDRAWAL) "Place of withdraw: $placeOfTransaction\n"
+        else "Place of deposit: $placeOfTransaction\n"
+
+        string += "ATM number: $atmNum\nStatus: $status\nId: $id"
+        return string
+    }
 }

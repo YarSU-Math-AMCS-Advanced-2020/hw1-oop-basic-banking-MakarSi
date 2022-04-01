@@ -5,5 +5,5 @@ class Person(
     var passport: String
 ): Client(){
     override val id: Int = hashCode()
-    override fun toString() = "$person\n$address\nPhone number: $phone_number\nPassport: $passport"
+    override fun toString() = "$person\n$address\nPhone number: $phone_number\nPassport: $passport\nId: $id"
 }

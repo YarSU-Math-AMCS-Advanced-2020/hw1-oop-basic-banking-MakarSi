@@ -1,35 +1,37 @@
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class Card(var account_id: Int, var pay_system: PaySystem) {
+class Card(var accountId: Int, var paySystem: PaySystem) {
     enum class PaySystem{ Lisa, MasterBart, HoMir }
     var limit: Double? = null
+        set(value){
+            if (value != null){
+                if (value >= 0)
+                    field = value
+            }
+            else field = value
+        }
     val id = hashCode()
-    val expiration_date = LocalDateTime.now().plusYears(4)
+    private val expirationDate = LocalDateTime.now().plusYears(4)
 
     init{
-        var account: Account? = AccountStorage[account_id]
-        if (account != null){
-            if (!account.card)
-                account.card = true
-            else throw Exception("Card was already opened")
-        }
-        else throw Exception("Account doesnt exists")
+        val account = AccountStorage[accountId]
+        if (!account.card)
+            account.card = true
+        else throw Exception("Card was already opened")
     }
 
-    fun rebinding(account_to_id: Int){
-        var account_to: Account? = AccountStorage[account_to_id]
-        if (account_to != null){
-            if (!account_to.card) {
-                account_to.card = true
-                AccountStorage[account_id]?.card = false
-                account_id = account_to_id
-            }
-            else throw Exception("Card for account_to already exists")
+    fun rebinding(accountToId: Int){
+    val accountTo = AccountStorage[accountToId]
+        if (!accountTo.card) {
+            accountTo.card = true
+            AccountStorage[accountId].card = false
+            accountId = accountToId
         }
-        else throw Exception("Account doesnt exists")
+        else throw Exception("Card for account already exists")
     }
 
-    override fun toString(): String = "Linked account:$account_id\nPaySystem$pay_system\n" +
-            "Expiration date:\n${expiration_date.format(DateTimeFormatter.ISO_DATE)}\nLimit:$limit"
+    override fun toString(): String = "Linked account:$accountId\nPaySystem$paySystem\n" +
+            "Expiration date:\n${expirationDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))}" +
+            "\nLimit:$limit"
 }

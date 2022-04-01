@@ -1,77 +1,73 @@
 object ClientStorage{
-    private var client_list: MutableMap<Int, Client> = mutableMapOf()
+    private var clientList: MutableMap<Int, Client> = mutableMapOf()
 
-    operator fun get(index: Int): Client?{
-        return client_list[index]
+    operator fun get(index: Int): Client {
+        return clientList[index] ?: throw Exception("Client doesnt exists")
     }
 
-    fun person_register(person: PersonalInfo, address: Address, phone_num: String, passport: String){
-        var person = Person(person, address, phone_num, passport)
-        client_list[person.id] = person
+    fun personRegister(person: Person){
+        clientList[person.id] = person
+    }
+
+    fun legalEntityRegister(legalEntity: LegalEntity){
+        clientList[legalEntity.id] = legalEntity
     }
 }
 
 object AccountStorage{
-    private var account_list: MutableMap<Int, Account> = mutableMapOf()
+    private var accountList: MutableMap<Int, Account> = mutableMapOf()
 
-    operator fun get(index: Int): Account?{
-        return account_list[index]
+    operator fun get(index: Int): Account {
+        return accountList[index] ?: throw Exception("Account doesnt exists")
     }
 
-    fun open_debit_account(client_id: Int, currency: Currency){
-        val debit_account = DebitAccount(client_id, currency)
-        account_list[debit_account.id] = debit_account
+    fun openDebitAccount(debitAccount: DebitAccount){
+        accountList[debitAccount.id] = debitAccount
     }
 
-    fun close_account(account_to_del_id: Int, account_to_rm_id: Int): Boolean {
-        val account_to_del = account_list[account_to_del_id]
-        val account_to_rm = account_list[account_to_rm_id]
-        if (account_to_del == null || account_to_rm == null)
-            throw Exception("One of accounts doesnt exists")
-        val transaction = TransactionBWClients(account_to_del.balance, account_to_del, account_to_rm)
+    fun closeAccount(accountToDelId: Int, accountToRmId: Int){
+        val transaction = TransactionBWClients(this[accountToDelId].balance, this[accountToDelId], this[accountToRmId])
         TransactionStorage[transaction.id] = transaction
-        return if (transaction.status == TransactionBWClients.Status.COMPLETED) {
-            account_list.remove(account_to_del.id)
-            true
-        } else false
+        if (transaction.status == TransactionBWClients.Status.COMPLETED)
+            accountList.remove(accountToDelId)
+        else throw Exception("Transaction rejected")
     }
 
-    fun close_account(account_id: Int, place_to_withdraw: String, ATM_num: String): Boolean{
-        val account = account_list[account_id] ?: throw Exception("Account doesnt exists")
-        val transaction = CashTransaction(account, account.balance,
-            CashTransaction.TransType.WITHDRAWAL, place_to_withdraw, ATM_num, true)
+    fun closeAccount(accountId: Int, placeToWithdraw: String, ATM_num: String){
+        val transaction = CashTransaction(this[accountId], this[accountId].balance,
+            CashTransaction.TransType.WITHDRAWAL, placeToWithdraw, ATM_num, true)
         TransactionStorage[transaction.id] = transaction
-        return if(transaction.status == CashTransaction.Status.ACCEPTED){
-            account_list.remove(account_id)
-            true
-        }
-        else false
+        if(transaction.status == CashTransaction.Status.ACCEPTED)
+            accountList.remove(accountId)
+        else throw Exception("Transaction rejected")
     }
-
 }
 
 object CardStorage {
-    private var card_list: MutableMap<Int, Card> = mutableMapOf()
+    private var cardList: MutableMap<Int, Card> = mutableMapOf()
 
-    operator fun get(index: Int): Card?{
-        return card_list[index]
+    operator fun get(index: Int): Card{
+        return cardList[index] ?: throw Exception("Client doesnt exists")
     }
 
-    fun open_card(account_id: Int, paySystem: Card.PaySystem){
-        val account = AccountStorage[account_id] ?: throw Exception("Account doesnt exists")
-        var card = Card(account_id, paySystem)
-        card_list[card.id] = card
+    fun openCard(card: Card){
+        cardList[card.id] = card
+    }
+
+    fun closeCard(card_id: Int){
+       if (cardList.remove(card_id) == null)
+           throw Exception("Card doesnt exists")
     }
 }
 
 object TransactionStorage{
-    private var transaction_list: MutableMap<Int, Transaction> = mutableMapOf()
+    private var transactionList: MutableMap<Int, Transaction> = mutableMapOf()
 
-    operator fun get(index: Int): Transaction?{
-        return transaction_list[index]
+    operator fun get(index: Int): Transaction{
+        return transactionList[index] ?: throw Exception("Transaction doesnt exists")
     }
 
     operator fun set(index: Int, transaction: Transaction) {
-        transaction_list[index] = transaction
+        transactionList[index] = transaction
     }
 }
