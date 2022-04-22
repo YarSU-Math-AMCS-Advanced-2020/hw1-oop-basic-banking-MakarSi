@@ -31,7 +31,7 @@ class CashTransaction(private var account: Account,
     }
 
     override fun toString(): String {
-        var string = "Account: ${account.id}\nTime: " +
+        var string = "Account: ${account.getIdToTransferFrom}\nTime: " +
                 "${time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))}\nAmount: " +
                 "$amount\nCurrency: ${account.currency}\n"
 

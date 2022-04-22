@@ -1,9 +1,9 @@
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class Card(var accountId: Int, var paySystem: PaySystem) {
+class Card(var accountId: Int, var paySystem: PaySystem): IEnableToTransfer {
     enum class PaySystem{ Lisa, MasterBart, HoMir }
-    var limit: Double? = null
+    var limit: Double? = AccountStorage[accountId].limit
         set(value){
             if (value != null){
                 if (value >= 0)
@@ -30,6 +30,10 @@ class Card(var accountId: Int, var paySystem: PaySystem) {
         }
         else throw Exception("Card for account already exists")
     }
+
+    override fun getIdToTransferFrom(): Int = accountId
+
+    override fun getLimit(): Double = limit ?: 10e9
 
     override fun toString(): String = "Linked account:$accountId\nPaySystem$paySystem\n" +
             "Expiration date:\n${expirationDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))}" +

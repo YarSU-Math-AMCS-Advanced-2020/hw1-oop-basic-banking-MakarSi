@@ -170,10 +170,7 @@ object ConsoleInterface {
             println("Enter transfer amount")
             val amount = readln().toDouble()
             try {
-                val cardFrom = CardStorage[idFrom]
-                val cardTo = CardStorage[idTo]
-                val trans = TransactionBWClients(amount, AccountStorage[cardFrom.accountId],
-                    AccountStorage[cardTo.accountId], cardFrom, cardTo)
+                val trans = TransactionBWClients(amount, CardStorage[idFrom], CardStorage[idTo])
                 TransactionStorage[trans.id] = trans
                 transactionIdList.add(trans.id)
             } catch (e: Exception){

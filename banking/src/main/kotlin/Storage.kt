@@ -22,7 +22,7 @@ object AccountStorage{
     }
 
     fun openDebitAccount(debitAccount: DebitAccount){
-        accountList[debitAccount.id] = debitAccount
+        accountList[debitAccount.getIdToTransferFrom()] = debitAccount
     }
 
     fun closeAccount(accountToDelId: Int, accountToRmId: Int){

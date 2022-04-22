@@ -1,4 +1,4 @@
-abstract class Account(val clientId: Int, val currency: Currency){
+abstract class Account(val clientId: Int, val currency: Currency): IEnableToTransfer{
     var limit: Double? = null
         set(value){
             if (value != null){

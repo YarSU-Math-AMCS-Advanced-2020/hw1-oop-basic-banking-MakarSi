@@ -1,18 +1,26 @@
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-class TransactionBWClients(private val amount: Double, private val accountFrom: Account, private val accountTo: Account,
-                           private var cardFrom: Card? = null, private var cardTo: Card? = null): Transaction(){
+class TransactionBWClients(private val amount: Double): Transaction(){
 
     enum class Status { FOR_PROCESSING, PROCESSING, COMPLETED, REJECTED }
 
     var status = Status.FOR_PROCESSING
     private val time = LocalDateTime.now()
-    private val currency = accountFrom.currency
-    private var limit: Double = cardFrom?.limit ?: accountFrom.limit ?: 10e9
+    private val currency = Currency.USD
+    private var limit: Double = 10e9
     override val id = hashCode()
+    private var accountFromId = -1
+    private var accountToId = -1
 
-    init {
+    constructor(amount: Double, from: IEnableToTransfer, to: IEnableToTransfer) : this(amount){
+        accountFromId = from.getIdToTransferFrom()
+        accountToId = to.getIdToTransferFrom()
+        limit = from.getLimit()
+        processing(AccountStorage[accountFromId], AccountStorage[accountToId], limit)
+    }
+
+    private fun processing(accountFrom: Account, accountTo: Account, limit: Double){
         status = Status.PROCESSING
         status = if (accountFrom.currency == accountTo.currency &&
             limit >= amount && accountFrom.withdrawal(amount, currency)){
@@ -23,9 +31,7 @@ class TransactionBWClients(private val amount: Double, private val accountFrom: 
     }
 
     override fun toString(): String {
-        var string = if (cardFrom != null && cardTo != null)
-            "Card from: $cardFrom, card to: $cardTo\n"
-        else "Account from: ${accountFrom.id}, account to: ${accountTo.id}\n"
+        var string = "Account from: ${accountFromId}, account to: ${accountToId}\n"
         string += "Time: ${time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))}" +
                 "\nAmount: $amount\nCurrency: $currency\nStatus: $status\nId: $id"
         return string
